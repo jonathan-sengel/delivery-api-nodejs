@@ -18,7 +18,28 @@ async function newOrder(preOrder) {
     return order;
 }
 
+async function updateOrder(orderToUpdate) {
+    let { nextId, pedidos } = await getOrders();
+    let index = pedidos.findIndex(order => order.id === orderToUpdate.id);
+    if (index !== -1) {
+        pedidos[index] = {
+            id: orderToUpdate.id,
+            cliente: orderToUpdate.cliente,
+            produto: orderToUpdate.produto,
+            valor: orderToUpdate.valor,
+            entregue: orderToUpdate.entregue,
+            timestamp: new Date()
+        }
+
+        await fs.writeFile(global.jsonFile, JSON.stringify({ nextId, pedidos }));
+        return pedidos[index];
+    } else {
+        throw new Error(`Data not found id:${orderToUpdate.id}`);
+    }
+}
+
 export default {
     getOrders,
-    newOrder
+    newOrder,
+    updateOrder
 }
