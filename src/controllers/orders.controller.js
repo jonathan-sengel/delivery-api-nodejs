@@ -1,14 +1,16 @@
 import { validateOrder } from "../models/order.schema.js";
+import OrdersRepository from '../repository/orders.repository.js'
 
 class OrderControler {
-    getOrders(req, res, next) {
-        res.send({ message: 'get ok' });
+    async getOrders(req, res, next) {
+        res.send(await OrdersRepository.getOrders());
     }
 
-    newOrder(req, res, next) {
+    async newOrder(req, res, next) {
         const orderIsValid = validateOrder(req.body)
         if (orderIsValid === true) {
-            res.send({ message: 'ok' })
+            const preOrder = req.body;
+            res.send(await OrdersRepository.newOrder(preOrder));
         } else {
             res.status(400).send(orderIsValid);
         }

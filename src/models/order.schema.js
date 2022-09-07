@@ -6,13 +6,13 @@ const orderSchema = {
     type: 'object',
     properties: {
         id: { type: 'integer' },
-        client: { type: 'string' },
-        product: { type: 'string' },
-        price: { type: 'number' },
-        delivered: { type: 'boolean' },
+        cliente: { type: 'string' },
+        produto: { type: 'string' },
+        valor: { type: 'number' },
+        entregue: { type: 'boolean' },
         timestamp: { type: 'string' }
     },
-    required: ['client', 'product', 'price'],
+    required: ['cliente', 'produto', 'valor'],
     additionalProperties: false
 };
 
