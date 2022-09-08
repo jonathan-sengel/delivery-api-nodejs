@@ -1,4 +1,4 @@
-import { validateDeleteOrder, validateNewOrder, validateOrderUpdate, validateTotalOrders, validateUpdateStatus } from "../models/order.schema.js";
+import { validateDeleteOrder, validateNewOrder, validateOrderUpdate, validateTotalOrdersByClient, validateTotalOrdersByProduct, validateUpdateStatus } from "../models/order.schema.js";
 import OrdersRepository from '../repository/orders.repository.js'
 
 class OrderControler {
@@ -75,12 +75,12 @@ class OrderControler {
         }
     }
 
-    async getTotalOrders(req, res, next) {
+    async getTotalOrdersByClient(req, res, next) {
         try {
-            const idIsValid = validateTotalOrders(req.body);
+            const idIsValid = validateTotalOrdersByClient(req.body);
             if (idIsValid === true) {
                 const clientName = req.body.cliente;
-                res.send(await OrdersRepository.getTotalOrders(clientName));
+                res.send(await OrdersRepository.getTotalOrdersByClient(clientName));
             } else {
                 res.status(400).send(idIsValid);
             }
@@ -88,6 +88,21 @@ class OrderControler {
             next(err);
         }
     }
+
+    async getTotalOrdersByProduct(req, res, next) {
+        try {
+            const idIsValid = validateTotalOrdersByProduct(req.body);
+            if (idIsValid === true) {
+                const productName = req.body.produto;
+                res.send(await OrdersRepository.getTotalOrdersByProduct(productName));
+            } else {
+                res.status(400).send(idIsValid);
+            }
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new OrderControler();

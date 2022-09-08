@@ -72,18 +72,16 @@ async function getOrderById(id) {
     }
 }
 
-async function getTotalOrders(cliente) {
+async function getTotalOrdersByClient(cliente) {
     const { pedidos } = await getOrders();
     const pedidosCliente = pedidos.filter(pedido => {
         if (pedido.cliente) {
             return pedido.cliente.toUpperCase() === cliente.toUpperCase();
         }
     });
-
     if (pedidosCliente.length < 1) {
         throw new Error(`Customer '${cliente}' has no orders.`);
     }
-
     const pedidosReduced = pedidosCliente.reduce((acc, pedido) => {
         if (pedido.entregue) {
             return acc + pedido.valor
@@ -92,7 +90,27 @@ async function getTotalOrders(cliente) {
             return acc;
         }
     }, 0);
+    return { valorTotal: pedidosReduced };
+}
 
+async function getTotalOrdersByProduct(produto) {
+    const { pedidos } = await getOrders();
+    const pedidosProduto = pedidos.filter(pedido => {
+        if (pedido.produto) {
+            return pedido.produto.toUpperCase() === produto.toUpperCase();
+        }
+    });
+    if (pedidosProduto.length < 1) {
+        throw new Error(`Customer '${produto}' has no orders.`);
+    }
+    const pedidosReduced = pedidosProduto.reduce((acc, pedido) => {
+        if (pedido.entregue) {
+            return acc + pedido.valor
+        }
+        else {
+            return acc;
+        }
+    }, 0);
     return { valorTotal: pedidosReduced };
 }
 
@@ -103,5 +121,6 @@ export default {
     updateOrderStatus,
     deleteOrder,
     getOrderById,
-    getTotalOrders
+    getTotalOrdersByClient,
+    getTotalOrdersByProduct
 }
