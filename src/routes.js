@@ -7,7 +7,9 @@ router.get('/orders', OrderController.getOrders);
 router.post('/newOrder', OrderController.newOrder);
 router.put('/updateOrder', OrderController.updateOrder);
 router.put('/updateStatus', OrderController.updateStatus);
+router.delete('/deleteOrder', OrderController.deleteOrder);
 router.get('/order/:id', OrderController.getOrderById);
+router.get('/totalOrders', OrderController.getTotalOrders);
 
 router.use((err, req, res, next) => {
     res.status(400).send({ error: err.message });

@@ -58,7 +58,7 @@ async function deleteOrder(orderId) {
         await fs.writeFile(global.jsonFile, JSON.stringify({ nextId, pedidos }));
         return { message: 'delete ok' }
     } else {
-        throw new Error(`Order of id '${orderToUpdate.id}' not found.`)
+        throw new Error(`Order of id '${orderId}' not found.`)
     }
 }
 
@@ -72,11 +72,36 @@ async function getOrderById(id) {
     }
 }
 
+async function getTotalOrders(cliente) {
+    const { pedidos } = await getOrders();
+    const pedidosCliente = pedidos.filter(pedido => {
+        if (pedido.cliente) {
+            return pedido.cliente.toUpperCase() === cliente.toUpperCase();
+        }
+    });
+
+    if (pedidosCliente.length < 1) {
+        throw new Error(`Customer '${cliente}' has no orders.`);
+    }
+
+    const pedidosReduced = pedidosCliente.reduce((acc, pedido) => {
+        if (pedido.entregue) {
+            return acc + pedido.valor
+        }
+        else {
+            return acc;
+        }
+    }, 0);
+
+    return { valorTotal: pedidosReduced };
+}
+
 export default {
     getOrders,
     newOrder,
     updateOrder,
     updateOrderStatus,
     deleteOrder,
-    getOrderById
+    getOrderById,
+    getTotalOrders
 }

@@ -1,4 +1,4 @@
-import { validateNewOrder, validateOrderUpdate, validateUpdateStatus } from "../models/order.schema.js";
+import { validateDeleteOrder, validateNewOrder, validateOrderUpdate, validateTotalOrders, validateUpdateStatus } from "../models/order.schema.js";
 import OrdersRepository from '../repository/orders.repository.js'
 
 class OrderControler {
@@ -50,7 +50,7 @@ class OrderControler {
 
     async deleteOrder(req, res, next) {
         try {
-            const idIsValid = validateUpdateStatus(req.body);
+            const idIsValid = validateDeleteOrder(req.body);
             if (idIsValid === true) {
                 const orderId = req.body.id;
                 res.send(await OrdersRepository.deleteOrder(orderId));
@@ -69,6 +69,20 @@ class OrderControler {
                 throw new Error(`The id must be integer`)
             } else {
                 res.send(await OrdersRepository.getOrderById(idToDelete));
+            }
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async getTotalOrders(req, res, next) {
+        try {
+            const idIsValid = validateTotalOrders(req.body);
+            if (idIsValid === true) {
+                const clientName = req.body.cliente;
+                res.send(await OrdersRepository.getTotalOrders(clientName));
+            } else {
+                res.status(400).send(idIsValid);
             }
         } catch (err) {
             next(err);

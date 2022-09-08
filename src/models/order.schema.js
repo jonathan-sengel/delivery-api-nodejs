@@ -5,7 +5,6 @@ const ajv = new Ajv();
 const newOrderSchema = {
     type: 'object',
     properties: {
-        id: { type: 'integer' },
         cliente: { type: 'string' },
         produto: { type: 'string' },
         valor: { type: 'number' },
@@ -21,7 +20,11 @@ export function validateNewOrder(order) {
         const error = validate.errors[0];
         if (error.keyword === 'type') {
             return { field: error.instancePath.replace('/', ''), message: error.message }
-        } else {
+        }
+        if (error.keyword === 'additionalProperties') {
+            return { field: error.params.additionalProperty, message: error.message }
+        }
+        else {
             const msg = error.message.split("'");
             return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
         }
@@ -48,7 +51,11 @@ export function validateOrderUpdate(orderToUpdate) {
         const error = validate.errors[0];
         if (error.keyword === 'type') {
             return { field: error.instancePath.replace('/', ''), message: error.message }
-        } else {
+        }
+        if (error.keyword === 'additionalProperties') {
+            return { field: error.params.additionalProperty, message: error.message }
+        }
+        else {
             const msg = error.message.split("'");
             return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
         }
@@ -112,3 +119,30 @@ export function validateDeleteOrder(orderId) {
     } return true;
 }
 
+
+const getTotalOrders = {
+    type: 'object',
+    properties: {
+        cliente: { type: 'string' }
+    },
+    required: ['cliente'],
+    additionalProperties: false
+}
+
+export function validateTotalOrders(cliente) {
+    let validate = ajv.compile(getTotalOrders);
+    const isvalid = validate(cliente);
+    if (!isvalid) {
+        const error = validate.errors[0];
+        if (error.keyword === 'type') {
+            return { field: error.instancePath.replace('/', ''), message: error.message }
+        }
+        if (error.keyword === 'additionalProperties') {
+            return { field: error.params.additionalProperty, message: error.message }
+        }
+        else {
+            const msg = error.message.split("'");
+            return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
+        }
+    } return true;
+}
