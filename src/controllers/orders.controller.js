@@ -103,6 +103,14 @@ class OrderControler {
         }
     }
 
+    async topProducts(req, res, next) {
+        try {
+            res.send(await OrdersRepository.getTopProducts());
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new OrderControler();

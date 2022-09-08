@@ -1,5 +1,6 @@
 import express from 'express';
 import { router } from './routes.js';
+import cors from 'cors';
 
 export class App {
     constructor() {
@@ -10,9 +11,14 @@ export class App {
 
     #middleware() {
         this.server.use(express.json());
+        this.server.use(cors({
+            origin: '*',
+            allowedHeaders: 'Content-Security-Policy'
+        }));
     }
 
     #router() {
+
         this.server.use(router);
     }
 

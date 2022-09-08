@@ -11,6 +11,7 @@ router.delete('/deleteOrder', OrderController.deleteOrder);
 router.get('/order/:id', OrderController.getOrderById);
 router.get('/totalOrdersByClient', OrderController.getTotalOrdersByClient);
 router.get('/totalOrdersByProduct', OrderController.getTotalOrdersByProduct);
+router.get('/topProducts', OrderController.topProducts);
 
 router.use((err, req, res, next) => {
     res.status(400).send({ error: err.message });

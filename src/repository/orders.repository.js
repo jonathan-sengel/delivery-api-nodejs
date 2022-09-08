@@ -114,6 +114,46 @@ async function getTotalOrdersByProduct(produto) {
     return { valorTotal: pedidosReduced };
 }
 
+async function getTopProducts() {
+    const { pedidos } = await getOrders();
+    let ranking = groupBy(pedidos, 'produto');
+    let arrObj = Object.entries(ranking);
+    arrObj.map(item => {
+        return { ...item }
+    });
+    arrObj.sort((a, b) => {
+        return b[1].qtd - a[1].qtd;
+    });
+    return arrObj.reduce((acc, item) => {
+
+        acc.push(`${item[0]} - ${item[1].qtd}`)
+        return acc;
+    }, []);
+
+}
+
+
+
+function groupBy(array, prop) {
+    return array.reduce((acc, obj) => {
+        let key = obj[prop];
+        if (!acc[key]) {
+            acc[key] = {
+                qtd: 0,
+                total: 0,
+                // ordersId: []
+            };
+        }
+
+        if (obj.entregue) {
+            acc[key].qtd += 1;
+            acc[key].total += obj.valor;
+        }
+        // acc[key].ordersId.push(obj.id);
+        return acc;
+    }, {});
+}
+
 export default {
     getOrders,
     newOrder,
@@ -122,5 +162,6 @@ export default {
     deleteOrder,
     getOrderById,
     getTotalOrdersByClient,
-    getTotalOrdersByProduct
+    getTotalOrdersByProduct,
+    getTopProducts
 }
