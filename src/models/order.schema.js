@@ -53,5 +53,32 @@ export function validateOrderUpdate(orderToUpdate) {
             return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
         }
     } return true;
+}
 
+const updateStatusSchema = {
+    type: 'object',
+    properties: {
+        id: { type: 'integer' },
+        entregue: { type: 'boolean' }
+    },
+    required: ['id', 'entregue'],
+    additionalProperties: false
+}
+
+export function validateUpdateStatus(orderToUpdate) {
+    let validate = ajv.compile(updateStatusSchema);
+    const isvalid = validate(orderToUpdate);
+    if (!isvalid) {
+        const error = validate.errors[0];
+        if (error.keyword === 'type') {
+            return { field: error.instancePath.replace('/', ''), message: error.message }
+        }
+        if (error.keyword === 'additionalProperties') {
+            return { field: error.params.additionalProperty, message: error.message }
+        }
+        else {
+            const msg = error.message.split("'");
+            return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
+        }
+    } return true;
 }

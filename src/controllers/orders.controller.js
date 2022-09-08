@@ -1,4 +1,4 @@
-import { validateNewOrder, validateOrderUpdate } from "../models/order.schema.js";
+import { validateNewOrder, validateOrderUpdate, validateUpdateStatus } from "../models/order.schema.js";
 import OrdersRepository from '../repository/orders.repository.js'
 
 class OrderControler {
@@ -23,6 +23,16 @@ class OrderControler {
             res.send(await OrdersRepository.updateOrder(orderToUpdate));
         } else {
             res.status(400).send(orderIsValid);
+        }
+    }
+
+    async updateStatus(req, res, next) {
+        const dataIsValid = validateUpdateStatus(req.body);
+        if (dataIsValid === true) {
+            const orderToUpdate = req.body;
+            res.send(await OrdersRepository.updateOrderStatus(orderToUpdate));
+        } else {
+            res.status(400).send(dataIsValid);
         }
     }
 }

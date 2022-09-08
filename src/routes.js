@@ -6,5 +6,6 @@ const router = Router();
 router.get('/orders', OrderController.getOrders);
 router.post('/newOrder', OrderController.newOrder);
 router.put('/updateOrder', OrderController.updateOrder);
+router.put('/updateStatus', OrderController.updateStatus);
 
 export { router }
