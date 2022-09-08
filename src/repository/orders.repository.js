@@ -33,7 +33,7 @@ async function updateOrder(orderToUpdate) {
         await fs.writeFile(global.jsonFile, JSON.stringify({ nextId, pedidos }));
         return pedidos[index];
     } else {
-        throw new Error(`Order of id:${orderToUpdate.id} not found.`);
+        throw new Error(`Order of id '${orderToUpdate.id}' not found.`);
     }
 }
 
@@ -46,7 +46,29 @@ async function updateOrderStatus(orderToUpdate) {
         await fs.writeFile(global.jsonFile, JSON.stringify({ nextId, pedidos }));
         return pedidos[index];
     } else {
-        throw new Error(`Order of id:${orderToUpdate.id} not found.`)
+        throw new Error(`Order of id '${orderToUpdate.id}' not found.`)
+    }
+}
+
+async function deleteOrder(orderId) {
+    let { nextId, pedidos } = await getOrders();
+    let index = pedidos.findIndex(order => order.id === orderId);
+    if (index !== -1) {
+        pedidos.splice(index, 1);
+        await fs.writeFile(global.jsonFile, JSON.stringify({ nextId, pedidos }));
+        return { message: 'delete ok' }
+    } else {
+        throw new Error(`Order of id '${orderToUpdate.id}' not found.`)
+    }
+}
+
+async function getOrderById(id) {
+    const orders = await getOrders();
+    let index = orders.pedidos.findIndex(pedido => pedido.id == id);
+    if (index === -1) {
+        throw new Error(`Order of id '${id}' was not found.`);
+    } else {
+        return orders.pedidos[index];
     }
 }
 
@@ -54,5 +76,7 @@ export default {
     getOrders,
     newOrder,
     updateOrder,
-    updateOrderStatus
+    updateOrderStatus,
+    deleteOrder,
+    getOrderById
 }

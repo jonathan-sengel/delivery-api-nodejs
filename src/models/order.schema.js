@@ -65,6 +65,7 @@ const updateStatusSchema = {
     additionalProperties: false
 }
 
+
 export function validateUpdateStatus(orderToUpdate) {
     let validate = ajv.compile(updateStatusSchema);
     const isvalid = validate(orderToUpdate);
@@ -82,3 +83,32 @@ export function validateUpdateStatus(orderToUpdate) {
         }
     } return true;
 }
+
+
+const deleteOrderSchema = {
+    type: 'object',
+    properties: {
+        id: { type: 'integer' }
+    },
+    required: ['id'],
+    additionalProperties: false
+}
+
+export function validateDeleteOrder(orderId) {
+    let validate = ajv.compile(deleteOrderSchema);
+    const isvalid = validate(orderId);
+    if (!isvalid) {
+        const error = validate.errors[0];
+        if (error.keyword === 'type') {
+            return { field: error.instancePath.replace('/', ''), message: error.message }
+        }
+        if (error.keyword === 'additionalProperties') {
+            return { field: error.params.additionalProperty, message: error.message }
+        }
+        else {
+            const msg = error.message.split("'");
+            return { field: msg[1], message: msg[0].replace('property', '').trimEnd() }
+        }
+    } return true;
+}
+
